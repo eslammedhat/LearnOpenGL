@@ -5,10 +5,9 @@
  *      Author: eslammedhat
  */
 
-#ifndef TEXTURES_H_
-#define TEXTURES_H_
+#ifndef TRANSFORMATIONS_H_
+#define TRANSFORMATIONS_H_
 
-
-int textures(void);
+int transformations(void);
 
 #endif /* 02_HELLOTRIANGLE_HELLOTRIANGLE_H_ */

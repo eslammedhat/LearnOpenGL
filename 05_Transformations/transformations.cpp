@@ -3,6 +3,11 @@
 
 #include <iostream>
 #include <math.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <stb_image.h>
 
 #include "../Miscellaneous/Shader.h"
@@ -17,13 +22,13 @@ static const unsigned int SCR_WIDTH = 800;
 static const unsigned int SCR_HEIGHT = 600;
 
 // shader location
-static const char * vShaderPath = "04_Textures/shaders/vShader.vs";
-static const char * fShaderPath = "04_Textures/shaders/fShader.fs";
-static const char * texture1Path = "04_Textures/container.jpg";
-static const char * texture2Path = "04_Textures/awesomeface.png";
+static const char * vShaderPath = "05_Transformations/shaders/vShader.vs";
+static const char * fShaderPath = "05_Transformations/shaders/fShader.fs";
+static const char * texture1Path = "05_Transformations/container.jpg";
+static const char * texture2Path = "05_Transformations/awesomeface.png";
 
 
-int textures(void)
+int transformations(void)
 {
 	// glfw: initialize and configure
 	// ------------------------------
@@ -181,15 +186,23 @@ int textures(void)
 		processInput(window);
 
 		// add mixFactor
+		// -------------
         float timeValue = glfwGetTime();
 		float mixFactor = sin(timeValue) / 2.0f + 0.5;
+		float scaleFactor = mixFactor;
 		shaderProg.setFloat("mixFactor", mixFactor);
+
+		// some transformations
+		// --------------------
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		shaderProg.setMat4f("transform", trans);
 
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
@@ -200,6 +213,20 @@ int textures(void)
 //		glDrawArrays(GL_TRIANGLES, 0, 3);
 //		glBindVertexArray(0); // no need to unbind it every time
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+
+		// some transformations
+		// --------------------
+		trans = glm::mat4(1.0f);
+		trans = glm::rotate(trans, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+		trans = glm::scale(trans, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
+		shaderProg.setMat4f("transform", trans);
+
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------

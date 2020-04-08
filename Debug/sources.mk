@@ -27,6 +27,7 @@ SUBDIRS := \
 02_HelloTriangle \
 03_Shaders \
 04_Textures \
+05_Transformations \
 Miscellaneous \
 glad \
 . \

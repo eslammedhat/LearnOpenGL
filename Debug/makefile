@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include glad/subdir.mk
 -include Miscellaneous/subdir.mk
+-include 05_Transformations/subdir.mk
 -include 04_Textures/subdir.mk
 -include 03_Shaders/subdir.mk
 -include 02_HelloTriangle/subdir.mk
