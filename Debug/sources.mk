@@ -28,6 +28,7 @@ SUBDIRS := \
 03_Shaders \
 04_Textures \
 05_Transformations \
+06_Coordinate_Systems \
 Miscellaneous \
 glad \
 . \

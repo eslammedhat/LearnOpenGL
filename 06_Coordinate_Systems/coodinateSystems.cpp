@@ -22,13 +22,13 @@ static const unsigned int SCR_WIDTH = 800;
 static const unsigned int SCR_HEIGHT = 600;
 
 // shader location
-static const char * vShaderPath = "05_Transformations/shaders/vShader.vs";
-static const char * fShaderPath = "05_Transformations/shaders/fShader.fs";
-static const char * texture1Path = "05_Transformations/container.jpg";
-static const char * texture2Path = "05_Transformations/awesomeface.png";
+static const char * vShaderPath = "06_Coordinate_Systems/shaders/vShader.vs";
+static const char * fShaderPath = "06_Coordinate_Systems/shaders/fShader.fs";
+static const char * texture1Path = "06_Coordinate_Systems/container.jpg";
+static const char * texture2Path = "06_Coordinate_Systems/awesomeface.png";
 
 
-int transformations(void)
+int coordinateSystems(void)
 {
 	// glfw: initialize and configure
 	// ------------------------------
@@ -40,6 +40,7 @@ int transformations(void)
 	#ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 	#endif
+
 
 	// glfw window creation
 	// --------------------
@@ -61,44 +62,88 @@ int transformations(void)
 		return -1;
 	}
 
+	// configure global opengl state
+	// -----------------------------
+	glEnable(GL_DEPTH_TEST);
+
 	Shader shaderProg(vShaderPath, fShaderPath);
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
-		// positions          // colors           // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
-	};
-	// tiangle indiceis
-	int indices[] = {
-			0, 1, 3,
-			1, 2, 3
+		// pos                // texture
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-	unsigned int VBO, VAO, EBO;
+    // world space positions of our cubes
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
+
+	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
 
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
 	// bind the data to VBO which is bound to VAO
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// bind elemnt buffer object
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
-	glEnableVertexAttribArray(1);
 	// textur coordinates
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	// load and create a texture
@@ -122,9 +167,7 @@ int transformations(void)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
+	} else {
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
@@ -153,29 +196,11 @@ int transformations(void)
 	}
 	stbi_image_free(data);
 
-	// note that this is allowed, the call to glVertexAttribPointer registered
-	// VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind.
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // remember: do NOT unbind the EBO while a VAO is active as the
-	// bound element buffer object IS stored in the VAO; keep the EBO bound.
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-//	glBindVertexArray(0);
-
-
-	// uncomment this call to draw in wireframe polygons.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	// The default texture unit for a texture is 0 which is the default active
 	// texture unit so we didn't need to assign a location in the previous section
 	// ---------------------------------------------------------------------------
 	shaderProg.use(); // don't forget to activate/use the shader before setting uniforms!
 	shaderProg.setInt("texture2", 1);
-	//	glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture0 always active by default so no need
-
 
 	// render loop
 	// -----------
@@ -189,47 +214,53 @@ int transformations(void)
 		// -------------
         float timeValue = glfwGetTime();
 		float mixFactor = sin(timeValue) / 2.0f + 0.5;
-		float scaleFactor = mixFactor;
+//		float scaleFactor = mixFactor;
 		shaderProg.setFloat("mixFactor", mixFactor);
-
-		// some transformations
-		// --------------------
-		glm::mat4 trans = glm::mat4(1.0f);
-		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-		shaderProg.setMat4f("transform", trans);
 
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-//		glDrawArrays(GL_TRIANGLES, 0, 3);
-//		glBindVertexArray(0); // no need to unbind it every time
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-
-
-		// second object
-		// -------------
+		// Draw static container
+		// ----------------------
+		glBindVertexArray(VAO);
 
 		// some transformations
-		trans = glm::mat4(1.0f);
-		trans = glm::rotate(trans, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-		trans = glm::scale(trans, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
-		shaderProg.setMat4f("transform", trans);
+		// --------------------
+		glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+		glm::mat4 view          = glm::mat4(1.0f);
+		glm::mat4 projection    = glm::mat4(1.0f);
+		model = model = glm::translate(model, cubePositions[9]);
+		model = glm::rotate(model, (float)glm::radians(45.0), glm::vec3(1.0f, 0.3f, 0.5f));
+		shaderProg.setMat4f("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		shaderProg.setFloat("mixFactor", 0.4);
+		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+		view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		projection = glm::perspective(glm::radians(45.0f), (float)(SCR_WIDTH*1.5) / (float)(SCR_HEIGHT), 0.1f, 100.0f);
+		// note: currently we set the projection matrix each frame, but since the
+		// projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+		shaderProg.setMat4f("view", view);
+		shaderProg.setMat4f("projection", projection);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+		// render boxes
+		for (unsigned int i = 0; i < 9; i++)
+		{
+			// calculate the model matrix for each object and pass it to shader before drawing
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+			float angle = 20.0f * i;
+			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle + 1), glm::vec3(1.0f, 0.3f, 0.5f));
+			shaderProg.setMat4f("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -241,7 +272,6 @@ int transformations(void)
 	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
