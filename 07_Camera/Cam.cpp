@@ -16,6 +16,9 @@ using namespace std;
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 static void processInput(GLFWwindow *window);
+static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
 
 // settings
 static const unsigned int SCR_WIDTH = 800;
@@ -32,9 +35,18 @@ static glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 static glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
+// camera related globals
+static bool firstMouse = true;
+static float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+static float pitch =  0.0f;
+static float lastX =  800.0f / 2.0;
+static float lastY =  600.0 / 2.0;
+static float fov   =  45.0f;
+
 // time calc
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
+
 
 int cam(void)
 {
@@ -44,6 +56,8 @@ int cam(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+
 
 	#ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
@@ -61,6 +75,12 @@ int cam(void)
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	// mouse input
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -232,8 +252,8 @@ int cam(void)
 		shaderProg.setFloat("mixFactor", mixFactor);
 
 		// camera
-		glm::mat4 view;
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		shaderProg.setMat4f("view", view);
 
 		// render
 		// ------
@@ -261,10 +281,10 @@ int cam(void)
 
 		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 		view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(glm::radians(45.0f), (float)(SCR_WIDTH*1.5) / (float)(SCR_HEIGHT), 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+
 		// note: currently we set the projection matrix each frame, but since the
 		// projection matrix rarely changes it's often best practice to set it outside the main loop only once.
-		shaderProg.setMat4f("view", view);
 		shaderProg.setMat4f("projection", projection);
 
 		// render boxes
@@ -294,6 +314,53 @@ int cam(void)
 	// ------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
+}
+
+// mouse call back
+// ---------------
+static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if(firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.05;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    if(pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+}
+
+// scroll callback
+// ---------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  if(fov > 1.0f && fov < 45.0f)
+  	fov -= yoffset;
+  else if(fov <= 1.0f)
+  	fov = 1.0f;
+  else if(fov >= 45.0f)
+  	fov = 45.0f;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
