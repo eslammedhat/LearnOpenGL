@@ -32,6 +32,9 @@ static glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 static glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
+// time calc
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
 
 int cam(void)
 {
@@ -211,6 +214,12 @@ int cam(void)
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
+		// update time
+		// -----------
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// input
 		// -----
 		processInput(window);
@@ -294,7 +303,7 @@ static void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
 		glfwSetWindowShouldClose(window, true);
 	} else {
-		const float cameraSpeed = 0.05f; // adjust accordingly
+		float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			cameraPos += cameraSpeed * cameraFront;
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
