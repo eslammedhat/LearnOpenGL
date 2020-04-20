@@ -16,6 +16,7 @@
 #include "04_Textures/textures.h"
 #include "05_Transformations/transformations.h"
 #include "06_Coordinate_Systems/coodinateSystems.h"
+#include "07_Camera/Cam.h"
 
 
 int main(){
@@ -24,7 +25,8 @@ int main(){
 //	return shaders();
 //	return textures();
 //	return transformations();
-return coordinateSystems();
+//	return coordinateSystems();
+	return cam();
 
 
 }
