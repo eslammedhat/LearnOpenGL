@@ -355,12 +355,13 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ---------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-  if(fov > 1.0f && fov < 45.0f)
-  	fov -= yoffset;
-  else if(fov <= 1.0f)
-  	fov = 1.0f;
-  else if(fov >= 45.0f)
-  	fov = 45.0f;
+	cout << "scroll" << endl;
+	if(fov > 1.0f && fov < 45.0f)
+	fov -= yoffset;
+	else if(fov <= 1.0f)
+	fov = 1.0f;
+	else if(fov >= 45.0f)
+	fov = 45.0f;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
