@@ -28,7 +28,7 @@
 		<link>
 			<name>glad</name>
 			<type>2</type>
-			<location>/usr/src/glad</location>
+			<location>/usr/local/src/glad</location>
 		</link>
 	</linkedResources>
 </projectDescription>

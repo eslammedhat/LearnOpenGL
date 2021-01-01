@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <math.h>
-#include <stb_image.h>
+#include <STBI/stb_image.h>
 
 #include "../Miscellaneous/Shader.h"
 using namespace std;

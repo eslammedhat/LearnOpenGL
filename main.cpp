@@ -8,7 +8,7 @@
 
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <STBI/stb_image.h>
 
 #include "01_HelloWindow/helloWindow.hpp"
 #include "02_HelloTriangle/helloTriangle.h"

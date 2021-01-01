@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <stb_image.h>
+#include <STBI/stb_image.h>
 
 #include "../Miscellaneous/Shader.h"
 using namespace std;
@@ -355,13 +355,17 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ---------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	cout << "scroll" << endl;
-	if(fov > 1.0f && fov < 45.0f)
-	fov -= yoffset;
-	else if(fov <= 1.0f)
-	fov = 1.0f;
-	else if(fov >= 45.0f)
-	fov = 45.0f;
+	if(yoffset > 0){
+		if(fov <= 1.0f)
+			fov = 1.0f;
+		else
+			fov -= yoffset;
+	} else {
+		if(fov >= 90.0f)
+			fov = 90.0f;
+		else
+			fov -= yoffset;
+	}
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
