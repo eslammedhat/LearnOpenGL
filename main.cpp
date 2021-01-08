@@ -17,6 +17,7 @@
 #include "05_Transformations/transformations.h"
 #include "06_Coordinate_Systems/coodinateSystems.h"
 #include "07_Camera/Cam.h"
+#include "08_LightingColor/LightingColor.h"
 
 
 int main(){
@@ -26,7 +27,8 @@ int main(){
 //	return textures();
 //	return transformations();
 //	return coordinateSystems();
-	return cam();
+//	return cam();
+	return lightingcolor();
 
 
 }
