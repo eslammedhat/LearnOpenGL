@@ -31,6 +31,7 @@ SUBDIRS := \
 06_Coordinate_Systems \
 07_Camera \
 08_LightingColor \
+09_BasicLighting \
 Miscellaneous \
 glad \
 . \

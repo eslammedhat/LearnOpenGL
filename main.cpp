@@ -18,6 +18,8 @@
 #include "06_Coordinate_Systems/coodinateSystems.h"
 #include "07_Camera/Cam.h"
 #include "08_LightingColor/LightingColor.h"
+#include "09_BasicLighting/BasicLighting.h"
+
 
 
 int main(){
@@ -28,7 +30,6 @@ int main(){
 //	return transformations();
 //	return coordinateSystems();
 //	return cam();
-	return lightingcolor();
-
-
+//	return lightingcolor();
+	return basiclighting();
 }
