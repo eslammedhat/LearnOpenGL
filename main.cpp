@@ -19,6 +19,7 @@
 #include "07_Camera/Cam.h"
 #include "08_LightingColor/LightingColor.h"
 #include "09_BasicLighting/BasicLighting.h"
+#include "10_Materials/Materials.h"
 
 
 
@@ -31,5 +32,6 @@ int main(){
 //	return coordinateSystems();
 //	return cam();
 //	return lightingcolor();
-	return basiclighting();
+//	return basiclighting();
+	return materials();
 }

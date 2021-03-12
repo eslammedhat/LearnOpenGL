@@ -32,6 +32,7 @@ SUBDIRS := \
 07_Camera \
 08_LightingColor \
 09_BasicLighting \
+10_Materials \
 Miscellaneous \
 glad \
 . \
