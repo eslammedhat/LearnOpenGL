@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <math.h>
-#include<algorithm>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -91,8 +91,8 @@ int materials(void)
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader lightingShader("09_BasicLighting/shaders/colors.vs", "09_BasicLighting/shaders/colors.fs");
-    Shader lightCubeShader("09_BasicLighting/shaders/light_cube.vs", "09_BasicLighting/shaders/light_cube.fs");
+    Shader lightingShader("10_Materials/shaders/colors.vs", "10_Materials/shaders/colors.fs");
+    Shader lightCubeShader("10_Materials/shaders/light_cube.vs", "10_Materials/shaders/light_cube.fs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
@@ -222,11 +222,21 @@ int materials(void)
         // Cube rendering
         lightingShader.use();
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
-        lightingShader.setVec3("lightPos", lightPos);
+        // model-view transform
         lightingShader.setVec3("viewPos", camera.Position);
         lightingShader.setMat4f("projection", projection);
         lightingShader.setMat4f("view", view);
+        // material
+        lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.specular", 0.7f, 0.7f, 0.7f);
+        lightingShader.setFloat("material.shininess", 32.0f);
+        // light
+        lightingShader.setVec3("light.position", lightPos);
+        lightingShader.setVec3("light.color",  1.0f, 1.0f, 1.0f);
+        lightingShader.setVec3("light.ambient",  0.01f, 0.01f, 0.01f);
+        lightingShader.setVec3("light.diffuse",  0.7f, 0.7f, 0.7f); // darken diffuse light a bit
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         // world transformation
         model = glm::mat4(1.0f);
 //        model = glm::scale(model, glm::vec3(1.0f, 30.0f, 1.0f)); // a smaller cube
