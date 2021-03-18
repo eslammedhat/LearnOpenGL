@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include glad/subdir.mk
 -include Miscellaneous/subdir.mk
+-include 11_LightingMaps/subdir.mk
 -include 10_Materials/subdir.mk
 -include 09_BasicLighting/subdir.mk
 -include 08_LightingColor/subdir.mk

@@ -20,7 +20,7 @@
 #include "08_LightingColor/LightingColor.h"
 #include "09_BasicLighting/BasicLighting.h"
 #include "10_Materials/Materials.h"
-
+#include "11_LightingMaps/lightMaps.h"
 
 
 int main(){
@@ -33,5 +33,6 @@ int main(){
 //	return cam();
 //	return lightingcolor();
 //	return basiclighting();
-	return materials();
+//	return materials();
+	return lightMaps();
 }

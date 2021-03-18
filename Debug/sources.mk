@@ -33,6 +33,7 @@ SUBDIRS := \
 08_LightingColor \
 09_BasicLighting \
 10_Materials \
+11_LightingMaps \
 Miscellaneous \
 glad \
 . \
