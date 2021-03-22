@@ -181,6 +181,8 @@ int lightMaps(void)
     // load textures (we now use a utility function to keep the code more organized)
     // -----------------------------------------------------------------------------
     unsigned int diffuseMap = Utils::loadTexture("11_LightingMaps/container2.png");
+    unsigned int specularMap = Utils::loadTexture("11_LightingMaps/container2_specular.png");
+
 
 
 	// render loop
@@ -239,9 +241,9 @@ int lightMaps(void)
         lightingShader.setMat4f("projection", projection);
         lightingShader.setMat4f("view", view);
         // material
-        lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+//        lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         lightingShader.setInt("material.diffuse", 0);
-        lightingShader.setVec3("material.specular", 0.7f, 0.7f, 0.7f);
+        lightingShader.setInt("material.specular", 1);
         lightingShader.setFloat("material.shininess", 32.0f);
         // light
         lightingShader.setVec3("light.position", lightPos);
@@ -256,6 +258,9 @@ int lightMaps(void)
         // dont forget to bind diffuse map
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        // dont forget to bind specular map
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
         // render the cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
